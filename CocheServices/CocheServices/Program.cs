@@ -7,6 +7,8 @@ using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+using static Microsoft.IdentityModel.Xml.WsTrustConstants_1_3;
 
 namespace CocheServices
 {
@@ -14,11 +16,10 @@ namespace CocheServices
     {
         public static void Main(string[] args)
         {
-            CreateWebHostBuilder(args).Build().Run();
+            BuildWebHost(args).Run();
         }
 
-        public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
-            WebHost.CreateDefaultBuilder(args)
-                .UseStartup<Startup>();
+        public static IWebHost BuildWebHost(string[] args) =>WebHost.CreateDefaultBuilder(args).UseStartup<Startup>().UseDefaultServiceProvider(options => options.ValidateScopes = false)
+        .Build();
     }
 }

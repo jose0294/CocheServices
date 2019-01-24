@@ -1,5 +1,9 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using CocheServices.Model;
+using CocheServices.Model.CochebDb;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Swashbuckle.AspNetCore.Swagger;
@@ -18,6 +22,9 @@ namespace CocheServices
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddDbContext<CochebDbContext>(options =>options.UseSqlServer(Configuration["Data:coche:ConnectionString"]));
+            services.AddDbContext<AppIdentityDbContext>(options => options.UseSqlServer(Configuration["Data:CocheIdentity:ConnectionString"]));
+            services.AddIdentity<IdentityUser, IdentityRole>().AddEntityFrameworkStores<AppIdentityDbContext>().AddDefaultTokenProviders();
             services.AddSwaggerGen(c => {
                 c.SwaggerDoc("v1", new Info { Title = "CocheService", Version = "v1" });
             });
@@ -36,8 +43,9 @@ namespace CocheServices
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
             });
-            app.UseHttpsRedirection();
+            app.UseAuthentication();
             app.UseMvc();
+            IdentitySeedData.EnsurePopulated(app);
         }
     }
 }
