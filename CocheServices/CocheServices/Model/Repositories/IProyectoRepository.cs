@@ -5,12 +5,10 @@ using System.Threading.Tasks;
 using CocheServices.Model.CochebDb;
 
 
-namespace CocheServices.Model
+namespace CocheServices.Model.Repositories
 {
-    public interface IProyectoRepository
+    public interface IProyectoRepository : IRepository<TCoche>
     {
-        IQueryable<TCoche> Proyectos { get; }
-        void SaveProject(TCoche proyecto);
-        TCoche DeleteProyecto(Guid ProyectoID);
+        IQueryable<TCoche> FilterProyectos(int pageSize, int page);
     }
 }

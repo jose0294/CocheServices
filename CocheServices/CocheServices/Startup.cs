@@ -1,5 +1,6 @@
 ﻿using CocheServices.Model;
 using CocheServices.Model.CochebDb;
+using CocheServices.Model.Repositories;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
@@ -25,6 +26,7 @@ namespace CocheServices
             services.AddDbContext<CochebDbContext>(options =>options.UseSqlServer(Configuration["Data:coche:ConnectionString"]));
             services.AddDbContext<AppIdentityDbContext>(options => options.UseSqlServer(Configuration["Data:CocheIdentity:ConnectionString"]));
             services.AddIdentity<IdentityUser, IdentityRole>().AddEntityFrameworkStores<AppIdentityDbContext>().AddDefaultTokenProviders();
+            services.AddTransient<IProyectoRepository, EFProyectoRepository>();
             services.AddSwaggerGen(c => {
                 c.SwaggerDoc("v1", new Info { Title = "CocheService", Version = "v1" });
             });

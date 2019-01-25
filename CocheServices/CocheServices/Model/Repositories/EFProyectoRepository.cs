@@ -8,13 +8,13 @@ namespace CocheServices.Model.Repositories
 {
     public class EFProyectoRepository : IProyectoRepository
     {
-        public IQueryable<TCoche> Proyectos => context.TCoche;
+        public IQueryable<TCoche> Items => context.TCoche;
         private CochebDbContext context;
         public EFProyectoRepository(CochebDbContext ctx)
         {
             context = ctx;
         }
-        public void SaveProject(TCoche proyecto)
+        public void Save(TCoche proyecto)
         {
             if (proyecto.CocheId == Guid.Empty)
             {
@@ -38,7 +38,7 @@ namespace CocheServices.Model.Repositories
             }
             context.SaveChangesAsync();
         }
-        public void DeleteProyecto(Guid ProyectoID)
+        public void  Delete(Guid ProyectoID)
         {
             TCoche dbEntry = context.TCoche
             .FirstOrDefault(p => p.CocheId == ProyectoID);
@@ -48,5 +48,13 @@ namespace CocheServices.Model.Repositories
                 context.SaveChanges();
             }
         }
+        public IQueryable<TCoche> FilterProyectos(int pageSize, int page)
+        {
+            return this.Items
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize);
+        }
+
+
     }
 }
