@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using CocheServices.Model.CochebDb;
+using CocheServices.Model.Repositories;
 using Microsoft.AspNetCore.Mvc;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -11,24 +13,31 @@ namespace CocheServices.Controllers
     [Route("api/[controller]")]
     public class AutosController : Controller
     {
+        private IProyectoRepository repositorio;
+        public AutosController(IProyectoRepository repo)
+        {
+            repositorio = repo;
+        }
         // GET: api/<controller>
         [HttpGet]
-        public IEnumerable<string> Get()
+        public IQueryable<TCoche> Get()
         {
-            return new string[] { "value1", "value2" };
+            return repositorio.Items;
         }
 
         // GET api/<controller>/5
         [HttpGet("{id}")]
-        public string Get(int id)
+        public TCoche Get(Guid ProyectoId)
         {
-            return "value";
+            return repositorio.Items.Where(p => p.CocheId == ProyectoId).FirstOrDefault();
         }
 
         // POST api/<controller>
         [HttpPost]
-        public void Post([FromBody]string value)
+        public IActionResult Post([FromBody]TCoche proyecto)
         {
+            repositorio.Save(proyecto);
+            return Ok(true);
         }
 
         // PUT api/<controller>/5
